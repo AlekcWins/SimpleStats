@@ -15,9 +15,17 @@ public class BlockBreak {
 
     public static class BlockBreakEventHandler {
 
+        private int blocksPlaced = -1;
+
         @SubscribeEvent
         public void onBlockBreak(BreakEvent event) {
-            System.out.println("the block was broken");
+            if (blocksPlaced == -1) {
+                blocksPlaced = playerNBT.readDataFromPlayerNBT(event.getPlayer(), "placed");
+            }
+            blocksPlaced += 1;
+
+            playerNBT.writeDataToPlayerNBT(event.getPlayer(), "broken", blocksPlaced);
+            System.out.println("the block was broken. #" + blocksPlaced);
         }
     }
 }
