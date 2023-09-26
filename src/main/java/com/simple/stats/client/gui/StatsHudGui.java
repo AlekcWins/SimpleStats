@@ -30,14 +30,11 @@ public class StatsHudGui extends Gui {
     public void onRenderStatsHud(RenderGameOverlayEvent.Post event) {
         if( event.type != RenderGameOverlayEvent.ElementType.TEXT)
             return;
-        GL11.glDisable(GL11.GL_LIGHTING);
         this.mc.fontRenderer.drawString("broken", 5, 5, 0xFFFFFF00);
         drawProgressBar(50, 5, 50, 10, broken / 100f);
 
         this.mc.fontRenderer.drawString("placed", 5, 12, 0xFFFFFF00);
         drawProgressBar(50, 12, 50, 10, placed / 100f);
-
-        GL11.glEnable(GL11.GL_LIGHTING);
     }
 
     private void drawProgressBar(int x, int y, int width, int height, float progress) {
