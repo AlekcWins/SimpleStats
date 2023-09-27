@@ -29,13 +29,13 @@ public class PlaceBlockPacket extends BasePacket<PlaceBlockPacket> {
 
     @Override
     public void handleClientSide(PlaceBlockPacket message, EntityPlayer p) {
-        StatsHudGui.placed = message.placed;
-        SimpleStats.LOG.info("CLIENT_SIDE: " + placed);
+        StatsHudGui.setPlaced(message.placed);
+        SimpleStats.LOG.info("CLIENT_SIDE: " + StatsHudGui.getPlaced());
     }
 
     @Override
     public void handleServerSide(PlaceBlockPacket message, EntityPlayer p) {
         // nothing
-        SimpleStats.LOG.info("SERVER_SIDE: " + placed);
+        SimpleStats.LOG.info("SERVER_SIDE: " + StatsHudGui.getPlaced());
     }
 }

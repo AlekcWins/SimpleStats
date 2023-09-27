@@ -29,8 +29,8 @@ public class BrokenBlockPacket extends BasePacket<BrokenBlockPacket> {
 
     @Override
     public void handleClientSide(BrokenBlockPacket message, EntityPlayer p) {
-        StatsHudGui.broken = message.broken;
-        SimpleStats.LOG.info("CLIENT_SIDE: " + StatsHudGui.broken);
+        StatsHudGui.setBroken(message.broken);
+        SimpleStats.LOG.info("CLIENT_SIDE: " + StatsHudGui.getBroken());
     }
 
     @Override
