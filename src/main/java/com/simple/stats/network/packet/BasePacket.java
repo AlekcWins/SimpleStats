@@ -7,7 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 
-//todo two class
+// todo two class
 public abstract class BasePacket<REQ extends IMessage> implements IMessage, IMessageHandler<REQ, REQ> {
 
     @Override

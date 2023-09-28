@@ -1,6 +1,7 @@
 package com.simple.stats;
 
 import com.simple.stats.client.gui.StatsHudGui;
+
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
@@ -12,4 +13,5 @@ public class ClientProxy extends CommonProxy {
         super.init(event);
         StatsHudGui.registerHandler();
     }
+
 }

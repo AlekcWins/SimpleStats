@@ -3,6 +3,7 @@ package com.simple.stats;
 import com.simple.stats.handler.BlockBreakEventHandler;
 import com.simple.stats.handler.BlockPlaceEventHandler;
 import com.simple.stats.network.NetworkHandler;
+
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
