@@ -101,11 +101,9 @@ public class StatsHudGui extends Gui {
     }
 
     private void drawProgressBar(int x, int y, int width, float progress, int barColor, int textLength) {
-
-        // Рассчитайте ширину заполнения прогресс-бара на основе значения progress
-        int coloredBar = barWidth;
         float progressBar = (float) Math.max(0, progress - 0.05);
-        int filledWidth = Math.min((int) (coloredBar * progressBar), coloredBar);
+        int filledWidth = Math.min((int) (barWidth * progressBar), barWidth);
+        String textPercent = String.format("%.2f", Math.min((progressBar * 100), 100)) + "%";
         int spaceForText = textLength * 6 + 5;
 
         Gui.drawRect(
@@ -126,6 +124,8 @@ public class StatsHudGui extends Gui {
             x + 25 + spaceForText + filledWidth,
             y + barHeight,
             new Color(100, 53, 102).getRGB()); // шкала
+
+        fontRenderer.drawStringWithShadow(textPercent, x + 50 + spaceForText, y + 1, Color.RED.getRGB());
     }
 
     public static void setBroken(Long broken) {
