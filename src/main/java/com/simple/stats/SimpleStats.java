@@ -15,6 +15,7 @@ public class SimpleStats {
 
     public static final Logger LOG = LogManager.getLogger(Tags.MODID);
 
+
     @SidedProxy(clientSide = "com.simple.stats.ClientProxy", serverSide = "com.simple.stats.CommonProxy")
     public static CommonProxy proxy;
 
