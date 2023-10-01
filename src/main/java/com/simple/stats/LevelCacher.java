@@ -8,8 +8,6 @@ public class LevelCacher<T extends Comparable<T>> {
     private final Map<Integer, T> cache = new HashMap<>();
     private final Func<T> func;
 
-    private int currentLevel;
-
     public LevelCacher(Func<T> func) {
         this.func = func;
     }
@@ -24,10 +22,6 @@ public class LevelCacher<T extends Comparable<T>> {
         return maxValueForLevel;
     }
 
-    // cache
-    // 3 = 1000
-    // 4 = 5000
-    // 5 = 10_000
     public int getLevel(T value, int currentLevel) { // GET 10_000
         if (currentLevel >= 0) {
             if (getMaxValueInLevel(currentLevel + 1).compareTo(value) >= 0) {
