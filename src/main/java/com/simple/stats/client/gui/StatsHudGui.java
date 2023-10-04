@@ -1,6 +1,5 @@
 package com.simple.stats.client.gui;
 
-import java.awt.Color;
 
 import com.simple.stats.config.SSConfig;
 import net.minecraft.client.Minecraft;
@@ -69,38 +68,41 @@ public class StatsHudGui extends Gui {
         placedLevel = placedCache.getLevel(placed, placedLevel);
         long placedPreviousLevelStats = placedCache.getMaxValueInLevel(placedLevel);
         float placedProgress = (float) (placed - placedPreviousLevelStats) / (placedCache.getMaxValueInLevel(placedLevel + 1) - placedPreviousLevelStats);
-        drawTag(SSConfig.itemForPlacedBar, 10, 5, placedProgress, placedLevel, Color.GREEN.getRGB());
+        drawTag(SSConfig.itemForPlacedBar, 10, 5, placedProgress, placedLevel, SSConfig.barPercentColorPlaced);
 
         // broken
         brokenLevel = brokenCache.getLevel(broken, brokenLevel);
         long brokenPreviousLevelStats = brokenCache.getMaxValueInLevel(brokenLevel);
         float brokenProgress = (float) (broken - brokenPreviousLevelStats) / (brokenCache.getMaxValueInLevel(brokenLevel + 1) - brokenPreviousLevelStats);
-        drawTag(SSConfig.itemForBrokenBar, 10, 20, brokenProgress, brokenLevel, Color.RED.getRGB());
+        drawTag(SSConfig.itemForBrokenBar, 10, 20, brokenProgress, brokenLevel, SSConfig.barTextStatusColor);
     }
 
-    private void drawTag(ItemStack itemStack, int x, int y, float progress, int level, int barColor) {
+    private void drawTag(ItemStack itemStack, int x, int y, float progress, int level, int progressBarColor) {
         if (itemStack != null && itemStack.getItem() != null) {
             renderItem.renderItemIntoGUI(fontRenderer, textureManager, itemStack, x, y);
             RenderHelper.disableStandardItemLighting();
         }
         String textLevel = Long.toString(level);
-        drawProgressBar(x, y + 4, SSConfig.barWidth, progress, barColor, textLevel.length());
+        drawProgressBar(x, y + 4, SSConfig.barWidth, progress, progressBarColor, textLevel.length());
 
         fontRenderer.drawStringWithShadow(textLevel, x + 25, y + 5, SSConfig.barLevelColor);
+
+
+
         RenderHelper.disableStandardItemLighting();
     }
 
-    private void drawProgressBar(int x, int y, int width, float progress, int barColor, int textLength) {
+    private void drawProgressBar(int x, int y, int width, float progress, int progressBarColor, int levelLength) {
         float progressBar = (float) Math.max(0, progress - 0.05);
         int filledWidth = Math.min((int) (SSConfig.barWidth * progressBar), SSConfig.barWidth);
-        String textPercent = String.format("%.2f", Math.min((progressBar * 100), 100)) + "%";
-        int spaceForText = textLength * 6 + 5;
 
-        Gui.drawRect(x - 1 + 20, y - 1, x + width + 25 + 1 + spaceForText, y + SSConfig.barHeight + 1, SSConfig.barBackgroundColor); // рамки
-        Gui.drawRect(x + 25 + spaceForText, y, x + 25 + width + spaceForText, y + SSConfig.barHeight, SSConfig.barProgressBackgroundColor); // фон
-        Gui.drawRect(x + 25 + spaceForText, y, x + 25 + spaceForText + filledWidth, y + SSConfig.barHeight, SSConfig.barProgressColor); // шкала
+        int spaceForLevel = levelLength * 6 + 5;
 
-        fontRenderer.drawStringWithShadow(textPercent, x + 50 + spaceForText, y + 1, SSConfig.barPercentColor);
+        Gui.drawRect(x - 1 + 20, y - 1, x + width + 25 + 1 + spaceForLevel, y + SSConfig.barHeight + 1, SSConfig.barBackgroundColor); // filling
+        Gui.drawRect(x + 25 + spaceForLevel, y, x + 25 + width + spaceForLevel, y + SSConfig.barHeight, SSConfig.barProgressBackgroundColor); // background
+
+        Gui.drawRect(x + 25 + spaceForLevel, y, x + 25 + spaceForLevel + filledWidth, y + SSConfig.barHeight, progressBarColor); // progress bar
+
     }
 
     public static void setBroken(Long broken) {
