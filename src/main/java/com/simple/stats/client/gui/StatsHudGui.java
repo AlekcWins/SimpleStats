@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-
 import com.simple.stats.LevelCacher;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -63,46 +62,74 @@ public class StatsHudGui extends Gui {
     @SubscribeEvent
     public void onRenderStatsHud(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
+        showPlacedBar();
+        showBrokenBar();
+    }
 
-        // placed
+    private void showPlacedBar(){
         placedLevel = placedCache.getLevel(placed, placedLevel);
         long placedPreviousLevelStats = placedCache.getMaxValueInLevel(placedLevel);
         float placedProgress = (float) (placed - placedPreviousLevelStats) / (placedCache.getMaxValueInLevel(placedLevel + 1) - placedPreviousLevelStats);
-        drawTag(SSConfig.itemForPlacedBar, 10, 5, placedProgress, placedLevel, SSConfig.barPercentColorPlaced);
+        long statNow = placed - placedPreviousLevelStats;
+        long statNeeds = placedCache.getMaxValueInLevel(placedLevel + 1) - placedPreviousLevelStats;
+        drawTag(SSConfig.itemForPlacedBar, 10, 5, placedProgress, placedLevel, SSConfig.barPercentColorPlaced, statNow, statNeeds);
 
-        // broken
+    }
+    private void showBrokenBar(){
         brokenLevel = brokenCache.getLevel(broken, brokenLevel);
         long brokenPreviousLevelStats = brokenCache.getMaxValueInLevel(brokenLevel);
         float brokenProgress = (float) (broken - brokenPreviousLevelStats) / (brokenCache.getMaxValueInLevel(brokenLevel + 1) - brokenPreviousLevelStats);
-        drawTag(SSConfig.itemForBrokenBar, 10, 20, brokenProgress, brokenLevel, SSConfig.barTextStatusColor);
+        long statNow = broken - brokenPreviousLevelStats;
+        long statNeeds = brokenCache.getMaxValueInLevel(brokenLevel + 1) - brokenPreviousLevelStats;
+        drawTag(SSConfig.itemForBrokenBar, 10, 20, brokenProgress, brokenLevel, SSConfig.barTextStatusColor, statNow, statNeeds);
     }
 
-    private void drawTag(ItemStack itemStack, int x, int y, float progress, int level, int progressBarColor) {
+
+    private void drawTag(ItemStack itemStack, int x, int y, float progress, int level, int progressBarColor, long statNow, long statNeeds) {
         if (itemStack != null && itemStack.getItem() != null) {
             renderItem.renderItemIntoGUI(fontRenderer, textureManager, itemStack, x, y);
             RenderHelper.disableStandardItemLighting();
         }
         String textLevel = Long.toString(level);
-        drawProgressBar(x, y + 4, SSConfig.barWidth, progress, progressBarColor, textLevel.length());
+        float progressBar = (float) Math.max(0, progress - 0.05);
+        int filledWidth = Math.min((int) (SSConfig.barWidth * progressBar), SSConfig.barWidth);
+        int spaceForLevel = textLevel.length() * 6 + 5;
 
+        drawProgressBar(x, y + 4, SSConfig.barWidth, progressBarColor, spaceForLevel, filledWidth);
         fontRenderer.drawStringWithShadow(textLevel, x + 25, y + 5, SSConfig.barLevelColor);
 
+        fontRenderer.FONT_HEIGHT = 2;
+        if (SSConfig.settingShowPercentToShowStatusInBar) {
+            String textPercent = String.format("%.2f", Math.min((progressBar * 100), 100)) + "%";
 
-
+            fontRenderer.drawStringWithShadow(textPercent, x + 40 + spaceForLevel, y + 5, SSConfig.barPercentColor);
+        } else {
+            String textCount = splitNumber(statNow) + " / " + splitNumber(statNeeds);
+            fontRenderer.drawStringWithShadow(textCount, x + 40 + spaceForLevel, y + 5, SSConfig.barPercentColor);
+        }
+        fontRenderer.FONT_HEIGHT = 9;
         RenderHelper.disableStandardItemLighting();
     }
 
-    private void drawProgressBar(int x, int y, int width, float progress, int progressBarColor, int levelLength) {
-        float progressBar = (float) Math.max(0, progress - 0.05);
-        int filledWidth = Math.min((int) (SSConfig.barWidth * progressBar), SSConfig.barWidth);
 
-        int spaceForLevel = levelLength * 6 + 5;
-
+    private void drawProgressBar(int x, int y, int width, int progressBarColor, int spaceForLevel, int filledWidth) {
         Gui.drawRect(x - 1 + 20, y - 1, x + width + 25 + 1 + spaceForLevel, y + SSConfig.barHeight + 1, SSConfig.barBackgroundColor); // filling
         Gui.drawRect(x + 25 + spaceForLevel, y, x + 25 + width + spaceForLevel, y + SSConfig.barHeight, SSConfig.barProgressBackgroundColor); // background
-
         Gui.drawRect(x + 25 + spaceForLevel, y, x + 25 + spaceForLevel + filledWidth, y + SSConfig.barHeight, progressBarColor); // progress bar
+    }
 
+    private static String splitNumber(long number) {
+        String numberString = String.valueOf(number);
+        char[] digits = numberString.toCharArray();
+        StringBuilder result = new StringBuilder();
+
+        for (int i = digits.length - 1; i >= 0; i--) {
+            result.append(digits[i]);
+            if (i % 3 == 0) {
+                result.reverse().append(" ");
+            }
+        }
+        return result.toString();
     }
 
     public static void setBroken(Long broken) {
