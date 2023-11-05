@@ -19,7 +19,7 @@ public final class NetworkHandler {
         INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Tags.MODID);
         INSTANCE.registerMessage(BrokenBlockPacket.class, BrokenBlockPacket.class, 0, Side.CLIENT);
         // INSTANCE.registerMessage(BrokenBlockPacket.class, BrokenBlockPacket.class, 0, Side.SERVER);
-
+        // TODO: remove before commmit->  что это за дерьмо!? 
         INSTANCE.registerMessage(PlaceBlockPacket.class, PlaceBlockPacket.class, 1, Side.CLIENT);
         // INSTANCE.registerMessage(PlaceBlockPacket.class, PlaceBlockPacket.class, 1, Side.SERVER);
     }

@@ -16,7 +16,7 @@ public class CommonProxy {
     // preInit "Run before anything else. Read your config, create blocks, items, etc, and register them with the
     // GameRegistry." (Remove if not needed)
     public void preInit(FMLPreInitializationEvent event) {
-        SimpleStats.LOG.info("I am " + Tags.MODNAME + " at version " + Tags.VERSION);
+        SimpleStats.LOG.info("I'm " + Tags.MODNAME + " at version " + Tags.VERSION);
         config.processConfig(event.getSuggestedConfigurationFile());
     }
 

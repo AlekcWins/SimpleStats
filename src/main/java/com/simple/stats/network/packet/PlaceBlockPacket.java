@@ -1,5 +1,7 @@
 package com.simple.stats.network.packet;
 
+import com.simple.stats.SimpleStats;
+import com.simple.stats.config.SSConfig;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.simple.stats.annotations.ClientSide;
@@ -10,13 +12,15 @@ import io.netty.buffer.ByteBuf;
 
 public class PlaceBlockPacket extends BasePacket<PlaceBlockPacket> {
 
-    public PlaceBlockPacket() {}
+    long placed;
+
+    public PlaceBlockPacket() {
+    }
 
     public PlaceBlockPacket(long placed) {
         this.placed = placed;
     }
 
-    long placed;
 
     @Override
     public void fromBytes(ByteBuf buf) {
@@ -32,13 +36,16 @@ public class PlaceBlockPacket extends BasePacket<PlaceBlockPacket> {
     @Override
     public void handleClientSide(PlaceBlockPacket message, EntityPlayer p) {
         StatsHudGui.setPlaced(message.placed);
-        // SimpleStats.LOG.info("CLIENT_SIDE: " + StatsHudGui.getPlaced());
+        if (SSConfig.DEBUG) {
+            SimpleStats.LOG.debug("CLIENT_SIDE: " + StatsHudGui.getPlaced());
+        }
     }
 
     @ServerSide
     @Override
     public void handleServerSide(PlaceBlockPacket message, EntityPlayer p) {
-        // nothing
-        // SimpleStats.LOG.info("SERVER_SIDE: " + StatsHudGui.getPlaced());
+        if (SSConfig.DEBUG) {
+            SimpleStats.LOG.debug("SERVER_SIDE: " + StatsHudGui.getPlaced());
+        }
     }
 }

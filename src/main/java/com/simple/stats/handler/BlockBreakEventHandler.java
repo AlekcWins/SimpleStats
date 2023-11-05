@@ -1,8 +1,11 @@
 package com.simple.stats.handler;
 
+import com.simple.stats.config.SSConfig;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 import com.simple.stats.SimpleStats;
@@ -28,7 +31,8 @@ public class BlockBreakEventHandler {
 
     private long blocksBroken;
 
-    private BlockBreakEventHandler() {}
+    private BlockBreakEventHandler() {
+    }
 
     public static void registerHandler() {
         FMLCommonHandler.instance()
@@ -42,19 +46,28 @@ public class BlockBreakEventHandler {
     public void onBlockBreak(BreakEvent event) {
         EntityPlayer player = event.getPlayer();
         storage.setContextObject(player);
-        if (blocksBroken != Long.MAX_VALUE) {
+        if (blocksBroken != Long.MAX_VALUE && isBrokenBlockIsSolid(event)) {
             blocksBroken += 1;
             storage.saveData(blocksBroken, BROKEN_TAG_NAME);
             NetworkHandler.sendToClient(new BrokenBlockPacket(blocksBroken), (EntityPlayerMP) player);
         }
 
-        SimpleStats.LOG.info("the block was broken. #" + blocksBroken);
+        if (SSConfig.DEBUG) {
+            SimpleStats.LOG.debug("the block was broken. #" + blocksBroken);
+        }
     }
+
+    private boolean isBrokenBlockIsSolid(BreakEvent event) {
+        return event.block.isBlockSolid(event.world, event.x, event.y, event.z, 0);
+    }
+
 
     @ServerSide
     @SubscribeEvent
     public void onServerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        SimpleStats.LOG.info("onServerJoin");
+        if (SSConfig.DEBUG) {
+            SimpleStats.LOG.debug("onServerJoin");
+        }
 
         storage.setContextObject(event.player);
         storage.readData(BROKEN_TAG_NAME)

@@ -1,5 +1,6 @@
 package com.simple.stats.network.packet;
 
+import com.simple.stats.config.SSConfig;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.simple.stats.SimpleStats;
@@ -11,7 +12,8 @@ import io.netty.buffer.ByteBuf;
 
 public class BrokenBlockPacket extends BasePacket<BrokenBlockPacket> {
 
-    public BrokenBlockPacket() {}
+    public BrokenBlockPacket() {
+    }
 
     public BrokenBlockPacket(long broken) {
         this.broken = broken;
@@ -33,12 +35,16 @@ public class BrokenBlockPacket extends BasePacket<BrokenBlockPacket> {
     @Override
     public void handleClientSide(BrokenBlockPacket message, EntityPlayer p) {
         StatsHudGui.setBroken(message.broken);
-        // SimpleStats.LOG.info("CLIENT_SIDE: " + StatsHudGui.getBroken());
+        if (SSConfig.DEBUG) {
+            SimpleStats.LOG.debug("CLIENT_SIDE: " + StatsHudGui.getBroken());
+        }
     }
 
     @ServerSide
     @Override
     public void handleServerSide(BrokenBlockPacket message, EntityPlayer p) {
-        SimpleStats.LOG.info("SERVER_SIDE: " + broken);
+        if (SSConfig.DEBUG) {
+            SimpleStats.LOG.debug("SERVER_SIDE: " + broken);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.simple.stats.handler;
 
+import com.simple.stats.config.SSConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,7 +28,8 @@ public class BlockPlaceEventHandler {
 
     private long blocksPlaced;
 
-    private BlockPlaceEventHandler() {}
+    private BlockPlaceEventHandler() {
+    }
 
     public static void registerHandler() {
         FMLCommonHandler.instance()
@@ -46,8 +48,9 @@ public class BlockPlaceEventHandler {
             storage.saveData(blocksPlaced, PLACED_TAG_NAME);
             NetworkHandler.sendToClient(new PlaceBlockPacket(blocksPlaced), (EntityPlayerMP) player);
         }
-
-        SimpleStats.LOG.info("the block was the place. #" + blocksPlaced);
+        if (SSConfig.DEBUG) {
+            SimpleStats.LOG.debug("The block was the place. #" + blocksPlaced);
+        }
     }
 
     @ServerSide
